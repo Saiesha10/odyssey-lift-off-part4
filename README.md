@@ -1,35 +1,67 @@
 # Odyssey Lift-off IV: Mutations
 
-Welcome to the companion app of Odyssey Lift-off IV! You can [find the course lessons and instructions on Odyssey](https://odyssey.apollographql.com/lift-off-part4), Apollo's learning platform.
+### 1. **Mutation**
 
-You can [preview the completed demo app here](https://lift-off-client-demo.netlify.app/).
+* Mutations allow clients to **modify data** on the server, such as creating, updating, or deleting records.
+* Unlike queries that fetch data, mutations are used for **data-changing operations**.
 
-## How to use this repo
+### 2. **Adding a Mutation to the Schema**
 
-The course will walk you step by step on how to implement the features you see in the demo app. This codebase is the starting point of your journey!
+* Define a `Mutation` type in the schema to specify the operations available for data modification.
+* Example:
 
-There are 3 main folders:
+  ```graphql
+  type Mutation {
+    incrementTrackViews(id: ID!): Track
+  }
+  ```
+* This mutation increments the view count of a specific track identified by its `id`.
 
-- `server`: The starting point of our GraphQL server.
-- `client`: The starting point of our React application.
-- `final`: The final stage of both the server and client folders, with all of the steps and code completed!
+### 3. **Updating the Data Source**
 
-To get started:
+* Extend the existing data source (e.g., `TrackAPI`) to handle the mutation logic.
+* Implement a method like `incrementTrackViews(id)` that performs the desired operation on the data.
 
-1. Navigate to the `server` folder.
-1. Run `npm install`.
-1. Run `npm start`.
+### 4. **Writing the Mutation Resolver**
 
-This will start the GraphQL API server.
+* In the resolver, handle the mutation by calling the appropriate method from the data source.
+* Example:
 
-In another Terminal window,
+  ```javascript
+  incrementTrackViews: (_, { id }, { dataSources }) => {
+    return dataSources.trackAPI.incrementTrackViews(id);
+  }
+  ```
+* This resolver calls the `incrementTrackViews` method from the `TrackAPI` data source.
 
-1. Navigate to the `client` folder.
-1. Run `npm install`.
-1. Run `npm start`.
+### 5. **Handling Errors in Mutations**
 
-This will open up `localhost:3000` in your web browser.
+* Use `try...catch` blocks to handle potential errors during mutation execution.
+* Return meaningful error messages to the client to indicate what went wrong.
 
-## Getting Help
+### 6. **Testing Mutations in the Apollo Explorer**
 
-For any issues or problems concerning the course content, please refer to the [Odyssey topic in our community forums](https://community.apollographql.com/tags/c/help/6/odyssey).
+* Use the Apollo Sandbox Explorer to test mutations interactively.
+* Example mutation:
+
+  ```graphql
+  mutation IncrementTrackViews($id: ID!) {
+    incrementTrackViews(id: $id) {
+      id
+      numberOfViews
+    }
+  }
+  ```
+* Provide variables in the Explorer to test the mutation with different inputs.
+
+### 7. **Using `useMutation` Hook in Apollo Client**
+
+* On the client side, use the `useMutation` hook from Apollo Client to send mutation requests.
+* Example:
+
+  ```javascript
+  const [incrementTrackViews] = useMutation(INCREMENT_TRACK_VIEWS);
+  ```
+* Trigger the mutation in response to user actions, such as clicking a button.
+
+
